@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Sidebar from '@/components/layout-items/sidebar'
+import ContextLayout from '@/components/context/contextLayout'
+import Navbar from '@/components/layout-items/navbar'
+import ProviderLayout from '@/components/layout-items/sessionProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,9 +18,24 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+      <ProviderLayout>
+
+
+        <ContextLayout>
+          <Navbar/>
+     
+            <main className='grow'>
+              {children}
+            </main>
+  
+        </ContextLayout>
+      </ProviderLayout>
+
+      </body>
     </html>
   )
 }

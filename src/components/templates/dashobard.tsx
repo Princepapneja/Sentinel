@@ -1,16 +1,47 @@
 'use client'
 import Icons from '@/components/essentails/icons'
-import Image from 'next/image'
 import Link from 'next/link'
-import {  useEffect } from 'react'
 import useData from '../essentails/customHooks/useData'
-import { refreshToken } from '../essentails/functions/refreshToken'
+import { Doughnut } from 'react-chartjs-2'
 
 export default function Dashboard() {
-  const {fetchIncidents,incidents}=useData()
-  useEffect(() => {
-    fetchIncidents()
-  },[])
+  const {  incidents,lowFilterIncidents,mediumFilterIncidents,highFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
+ 
+
+  const data = {
+    labels: [`Low ${lowIncidents?.length}`, `Medium ${mediumIncidents?.length}`, `High ${highIncidents?.length}`],
+    datasets: [
+      {
+        label: '# of Incidents',
+        data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length],
+        backgroundColor: [
+          '#fde047',
+          '#fdba74',
+          '#b91c1c',
+
+        ],
+
+        borderWidth: 1,
+      },
+    ],
+  };
+  let todayData={
+    labels: [`Low ${lowFilterIncidents?.length}`, `Medium ${mediumFilterIncidents?.length}`, `High ${highFilterIncidents?.length}`],
+    datasets: [
+      {
+        label: '# of Incidents',
+        data: [lowFilterIncidents?.length, mediumFilterIncidents?.length, highFilterIncidents?.length],
+        backgroundColor: [
+          '#fde047',
+          '#fdba74',
+          '#b91c1c',
+
+        ],
+
+        borderWidth: 1,
+      },
+    ],
+  };
   return (
     <>
       <div>
@@ -22,7 +53,7 @@ export default function Dashboard() {
 
               <div>
 
-                <span className="">Incidents {incidents?.length}</span>
+                <span className="">Incidents {filterIncidents?.length}</span>
                 <div className='flex gap-1'>
 
                   <span>Last 24 hours
@@ -34,8 +65,7 @@ export default function Dashboard() {
             {/* count  */}
             <div className='grid place-items-center'>
               <Icons type="case" />
-              <h3>No incidents found
-              </h3>
+              <h3>No incidents found</h3>
               <span>See incidents page for further information</span>
               <Link href="/dashboard/incidents" className='p-1 bg-primary px-2 text-white mt-2 '>Incidents</Link>
             </div>
@@ -43,27 +73,32 @@ export default function Dashboard() {
           </div>
           {/* anaylatics */}
 
-          <div className='p-4 bg-white'>
-            <span className="">Analytics</span>
+          {/* charts  */}
+          <div className='p-4 max-w-md w-full bg-white'>
+            <span className="">Today {filterIncidents?.length}</span>
             <div className='flex gap-1'>
               <span>Current status</span>
               <Icons type="tooltip" />
             </div>
             {/* charts  */}
-            <div className='h-24'></div>
-            <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-              <Icons type="case" />
-              <div>
+            {
+              incidents?.length > 0 ?
+                <div className='p-4'>
 
-                <h3>Improve your coverage</h3>
+                  <Doughnut data={todayData} />
+                </div>
+                :
+                <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+                  <Icons type="case" />
+                  <div>
 
-              </div>
-            </div>
+                    <h3>Improve your coverage</h3>
+
+                  </div>
+                </div>
+            }
           </div>
-          <div>
-
-
-          </div>
+          
         </div>
         <div className='flex gap-4 mb-2 '>
           <div className='p-4 bg-white grow'>
@@ -83,39 +118,55 @@ export default function Dashboard() {
               </div>
             </div>
             {/* count  */}
-            <div className='grid place-items-center'>
-              <Icons type="case" />
-              <h3>No incidents found
-              </h3>
-              <span>See incidents page for further information</span>
-            </div>
+            {incidents?.length > 0 ?
+              <div>
+                <div>
+
+                </div>
+                <div>
+
+                </div>
+              </div>
+              : <div className='grid place-items-center'>
+                <Icons type="case" />
+                <h3>No incidents found
+                </h3>
+                <span>See incidents page for further information</span>
+              </div>}
 
           </div>
-          {/* anaylatics */}
+          {/* charts */}
 
-          <div className='p-4 bg-white'>
-            <span className="">Analytics</span>
+          <div className='p-4 max-w-md w-full bg-white'>
+            <span className="">Total {incidents?.length} </span>
             <div className='flex gap-1'>
               <span>Current status</span>
               <Icons type="tooltip" />
             </div>
             {/* charts  */}
-            <div className='h-24'></div>
-            <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-              <Icons type="case" />
-              <div>
+            {
+              incidents?.length > 0 ?
+                <div className='p-4'>
 
-                <h3>Improve your coverage</h3>
+                  <Doughnut data={data} />
+                </div>
+                :
+                <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+                  <Icons type="case" />
+                  <div>
 
-              </div>
-            </div>
+                    <h3>Improve your coverage</h3>
+
+                  </div>
+                </div>
+            }
           </div>
           <div>
 
 
           </div>
         </div>
-       
+
 
       </div>
 

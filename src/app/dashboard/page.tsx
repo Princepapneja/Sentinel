@@ -1,15 +1,15 @@
+'use client'
 import Dashboard from '@/components/templates/dashobard'
-import { getServerSession } from 'next-auth'
-import React from 'react'
-import { authOptions } from '../api/auth/[...nextauth]/option'
-import { redirect } from 'next/navigation'
+import React, { useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import useData from '@/components/essentails/customHooks/useData'
 
-const Page = async () => {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-      redirect("/")
-  }
-  // console.log(session,"session");
+const Page =  () => {
+  const {fetchIncidents}=useData()
+  const session: any = useSession()
+  useEffect(() => {
+    fetchIncidents()
+  }, [session])
   
   return (
     <>

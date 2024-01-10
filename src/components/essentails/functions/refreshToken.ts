@@ -14,7 +14,6 @@ export const refreshToken = async (authResult:any) => {
         account: authResult.account,
         // interactionType: InteractionType.Popup,
       });
-      console.log(response);
     
     //   localStorage.setItem("token", response.accessToken)
       return response.accessToken

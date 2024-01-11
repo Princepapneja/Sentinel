@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^3.6.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "axios": "^1.6.5",
     "chart.js": "^4.4.1",
     "moment": "^2.30.1",

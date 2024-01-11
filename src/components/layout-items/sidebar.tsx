@@ -5,13 +5,18 @@ import Icons from '../essentails/icons'
 const Sidebar = () => {
   let navData = [
     {
-      name: "Dashboard",
+      name: "Home",
       link: "/dashboard",
-      icon: "dashboard"
+      icon: "home"
     },
     {
       name: "Incidents",
       link: "/dashboard/incidents",
+      icon: "warning"
+    },
+    {
+      name: "Sign-In Logs",
+      link: "/dashboard/sign-in-logs ",
       icon: "warning"
     },
     {
@@ -32,7 +37,7 @@ const Sidebar = () => {
           >
 
             <Icons type={`${open ?"cross" :"dashboard"}`} /></button>
-          {navData.map((item, index) => {
+          {navData?.map((item, index) => {
             return (
               <Link
                 key={index}

@@ -138,7 +138,7 @@
 //     const handleSelect = ((e: ChangeEvent<HTMLSelectElement>) => {
 //         const { value }: any = e.target
 //         setSeverityFilter(value)
-//         debugger
+//         
 //         setCurrentPage(1)
 
 //         switch (value) {
@@ -245,6 +245,8 @@ import Context from '../context/context';
 import moment from 'moment';
 import useData from '../essentails/customHooks/useData';
 import Pagination from '../essentails/snippets/pagination';
+import Modal from '../essentails/snippets/modal';
+import Icons from '../essentails/icons';
 
 interface Incident {
     severity: string;
@@ -267,22 +269,16 @@ const Incidents: React.FC = () => {
     const [severityFilter, setSeverityFilter] = useState<string | null>("");
     const [totalPages, setTotalPages] = useState<number>(0);
     const [items, setItems] = useState<Incident[]>([]);
+    const [selectedIncident, setSelectedIncident] = useState<any>({});
     const { incidents } = useContext(Context);
     const [indexOfLastItem, setIndexOfLastItem] = useState<number>(0);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState<number>(0);
 
     useEffect(() => {
-        // const lastIndex = currentPage * itemsPerPage;
-        // setIndexOfLastItem(lastIndex);
 
-        // const firstIndex = lastIndex - itemsPerPage;
-        // setIndexOfFirstItem(firstIndex);
-        // setTotalPages(Math.ceil(incidents?.length / itemsPerPage));
+        IncidentFilter();
 
-        // updateItemsBasedOnSeverity();
-        itemsSet();
-
-    }, [severityFilter,currentPage]);
+    }, [severityFilter, currentPage, incidents]);
 
 
 
@@ -292,20 +288,19 @@ const Incidents: React.FC = () => {
         setCurrentPage(1);
 
     };
-    const itemsSet = () => {
-        debugger;
+    const IncidentFilter = () => {
         const lastIndex = currentPage * itemsPerPage;
-        setIndexOfLastItem(lastIndex); 
+        setIndexOfLastItem(lastIndex);
         const firstIndex = lastIndex - itemsPerPage;
         setIndexOfFirstItem(firstIndex);
 
         let filteredData = incidents?.filter((e: any) => e.severity === severityFilter)
         if (severityFilter !== "") {
-            setItems(filteredData.slice(firstIndex,lastIndex))
+            setItems(filteredData.slice(firstIndex, lastIndex))
             setTotalPages(Math.ceil(filteredData?.length / itemsPerPage))
         } else {
 
-            setItems(incidents.slice(firstIndex,lastIndex));
+            setItems(incidents?.slice(firstIndex, lastIndex));
             setTotalPages(Math.ceil(incidents?.length / itemsPerPage))
 
         }
@@ -322,13 +317,14 @@ const Incidents: React.FC = () => {
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage((prevPage) => prevPage - 1);
-            itemsSet()
+            IncidentFilter()
         }
     };
     const handleIncident = ((id: any) => {
-        debugger
+
         const incident = items.find((e: any) => e.id === id)
         console.log(incident);
+        setSelectedIncident(incident);
 
     })
     return (
@@ -342,6 +338,7 @@ const Incidents: React.FC = () => {
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
+                            <option value="informational">Informational </option>
                         </select>
                     </label>
                 </div>
@@ -386,6 +383,34 @@ const Incidents: React.FC = () => {
                     <Pagination nextPage={nextPage} prevPage={prevPage} currentPage={currentPage} totalPages={totalPages} />
                 </div>
             </div>
+           {
+            Object.keys(selectedIncident)?.length>0 &&  <Modal>
+            <div> 
+                <div className='flex justify-between gap-2'>
+                    <h4 className='font-bold text-xl'>Incident Details</h4>
+                <button onClick={()=>{setSelectedIncident({})}}><Icons type="cross"/>  </button>
+
+                </div>
+                <div>
+
+               <span className='font-bold text-xl'> Title : {selectedIncident?.title}  </span>
+               </div>
+
+               <div>
+                <span className='font-bold text-xl'> Severity : </span> 
+                
+               <span className='capitalize'>{selectedIncident?.severity}</span>
+
+                </div>
+               <div>
+                <span className='font-bold text-xl'> Active : </span> 
+                
+               <span className='capitalize'>{selectedIncident?.status==="newAlert" ? "New" :selectedIncident?.status }</span>
+
+                </div>
+            </div>
+        </Modal>
+           }
         </>
     );
 }

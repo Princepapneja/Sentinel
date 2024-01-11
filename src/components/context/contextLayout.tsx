@@ -19,6 +19,8 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
     const [highFilterIncidents, setHighFilterIncidents] = useState<any>([]);
     const [mediumFilterIncidents, setMediumFilterIncidents] = useState<any>([]);
     const [lowFilterIncidents, setLowFilterIncidents] = useState<any>([]);
+    const [infoFilterIncidents, setInfoFilterIncidents] = useState<any>([]);
+    const [infoIncidents, setInfoIncidents] = useState<any>([]);
     const [lowIncidents, setLowIncidents] = useState<any>([]);
     const [token, setToken] = useState(session?.token)
     const [authResult, setAuthResult] = useState<any>(null);
@@ -27,19 +29,21 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
         if (session) {
 
 
-            // const graphApiUrl = 'https://graph.microsoft.com/v1.0/security/alerts';
-            const graphApiUrl = "https://graph.microsoft.com/v1.0/security/alerts?$filter=vendorInformation/provider eq 'Azure Sentinel'"
+            const graphApiUrl = 'https://graph.microsoft.com/v1.0/security/alerts';
+            // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/alerts?$filter=vendorInformation/provider eq 'Azure Sentinel'"
             // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/incidents"
 
             let data = await fetchData(graphApiUrl, session.token)
             const filteredData = data?.filter((e: any) => {
                 let curDate: any = new Date()
                 const newDate: any = new Date(e.createdDateTime)
-                return (curDate - newDate < 7*24 * 60 * 60 * 1000);
+                return (curDate - newDate < 24 * 60 * 60 * 1000);
             });
             
             setIncidents(data)
             setFilterIncidents(filteredData)
+            console.log(filteredData);
+            
             setHighFilterIncidents(filteredData?.filter((e:any)=>{
                 return e.severity === "high"
             }))
@@ -48,6 +52,9 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
             }))
             setLowFilterIncidents(filteredData?.filter((e:any)=>{
                 return e.severity === "low"
+            }))
+            setInfoFilterIncidents(filteredData?.filter((e:any)=>{
+                return e.severity === "informational"
             }))
             setHighIncidents(data?.filter((e:any)=>{
                 return e.severity === "high"
@@ -58,6 +65,10 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
             setLowIncidents(data?.filter((e:any)=>{
                 return e.severity === "low"
             }))
+            debugger
+            setInfoIncidents(data?.filter((e:any)=>{
+                return e.severity === "informational"
+            }))
 
         }
 
@@ -67,7 +78,7 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
     }
     return (
         <>
-            <Context.Provider value={{filterIncidents,highIncidents,highFilterIncidents, setHighFilterIncidents,mediumIncidents,lowFilterIncidents,mediumFilterIncidents, setMediumFilterIncidents, setLowFilterIncidents,lowIncidents, setLowIncidents, setMediumIncidents, setHighIncidents, setFilterIncidents, incidents, setIncidents, token, setToken, authResult, setAuthResult, fetchIncidents }}>
+            <Context.Provider value={{filterIncidents,highIncidents,infoIncidents, setInfoIncidents,infoFilterIncidents, setInfoFilterIncidents,highFilterIncidents, setHighFilterIncidents,mediumIncidents,lowFilterIncidents,mediumFilterIncidents, setMediumFilterIncidents, setLowFilterIncidents,lowIncidents, setLowIncidents, setMediumIncidents, setHighIncidents, setFilterIncidents, incidents, setIncidents, token, setToken, authResult, setAuthResult, fetchIncidents }}>
                 {children}
             </Context.Provider>
         </>

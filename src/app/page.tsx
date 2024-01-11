@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => {
   const session = useSession();
   const router=useRouter()
   useEffect(() => {
-    debugger
+    
     session?.status === 'authenticated' && router.push("/dashboard")
   },[session])
   return (

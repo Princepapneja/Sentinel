@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react'
 
-const Pagination = ({currentPage,totalPages , nextPage,prevPage}:any) => {
-    useEffect(()=>{
+const Pagination = ({ currentPage, totalPages, nextPage, prevPage }: any) => {
+  useEffect(() => {
 
-    },[totalPages])
+  }, [totalPages])
   return (
     <>
-    <div className='p-1 flex gap-2 justify-between'>
+      <div className='p-1 flex gap-2 justify-between'>
         <button onClick={prevPage}>
-            Previous
+          Previous
         </button>
-<div>
+        <div>
 
-<span>{currentPage}</span>
-<span> of </span>
-<span>{totalPages}</span>
-</div>
-<div>
-    <button onClick={nextPage}>Next</button>
-</div>
-    </div>
-    
+          <span>{currentPage}</span>
+          <span> of </span>
+          <span>{totalPages}</span>
+        </div>
+        <div>
+          <button onClick={nextPage}>Next</button>
+        </div>
+      </div>
+
     </>
   )
 }

@@ -1,53 +1,57 @@
 'use client'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import Icons from '../essentails/icons'
+import { AlertTriangle, Home,Menu,Wrench,X } from 'lucide-react';
 const Sidebar = () => {
   let navData = [
     {
       name: "Home",
       link: "/dashboard",
-      icon: "home"
+      icon: <Home />
     },
     {
       name: "Incidents",
       link: "/dashboard/incidents",
-      icon: "warning"
+      icon: <AlertTriangle />
     },
-    {
-      name: "Sign-In Logs",
-      link: "/dashboard/sign-in-logs ",
-      icon: "warning"
-    },
-    {
-      name: "Settings",
-      link: "/dashboard/settings",
-      icon: "settings"
-    },
+    // {
+    //   name: "Sign-In Logs",
+    //   link: "/dashboard/sign-in-logs ",
+    //   icon: <AlertTriangle />
+    // },
+    // {
+    //   name: "Settings",
+    //   link: "/dashboard/settings",
+    //   icon: <Wrench />
+    // },
 
 
   ]
   const [open, setOpen] = useState(false)
   return (
     <>
-      <aside className={`h-screen border-t-8  border-gray-300 overflow-y-auto  bg-primary ${!open ? "w-12 " : "w-40"} duration-300`}>
+      <aside className={`h-screen bg-secondary text-secondary-foreground  border-r-4 border-primary overflow-y-auto bg-  ${!open ? "w-12 " : "w-40"} duration-300`}>
         <nav className="  ">
           <button onClick={() => setOpen(!open)}
-            className={`${open && " justify-end"} flex   text-white border-b-8 border-gray-300  w-full p-2  duration-300 focus:outline-none`}
+            className={`${open && " justify-end"} flex     w-full p-2  duration-300 focus:outline-none`}
           >
 
-            <Icons type={`${open ?"cross" :"dashboard"}`} /></button>
+            {/* <Icons type={`${open ?"cross" :"dashboard"}`} /> */}
+            {open ?<X /> :<Menu />}
+            
+            </button>
           {navData?.map((item, index) => {
             return (
               <Link
                 key={index}
                 href={item.link}
-                className={`${!open && "p-2"} flex gap-1  text-white border-b-8 border-gray-300  p-2  focus:outline-none`}
+                className={`${!open && "p-2"} flex gap-1 border-t-2 border-primary text-base font-bold p-2 mb-2 focus:outline-none`}
               >
-                <Icons type={item.icon} />
+                {/* <Icons type={item.icon} /> */}
+                {item.icon}
 
                 {open &&
-                  <span className={`${!open && "w-0 opacity-0 invisible" } visible opacity-100 duration-300 overflow-hidden`}>
+                  <span className={`${!open && "w-0 opacity-0 invisible" } whitespace-nowrap visible opacity-100 duration-300 overflow-hidden`}>
                   {item.name}
                 </span>
                 }

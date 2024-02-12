@@ -1,7 +1,6 @@
 'use client'
 import useData from '@/components/essentails/customHooks/useData';
 import { getSignInLogs } from '@/components/essentails/functions/graphService';
-import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
 
 interface SignInLogsProps {
@@ -13,7 +12,7 @@ const SignInLogs: React.FC<SignInLogsProps> = () => {
     const {token}: any = useData()
 
     useEffect(() => {
-        debugger
+        
         console.log(token)
         if (token !== "" || !token) {
 

@@ -1,9 +1,11 @@
 'use client'
-import Icons from '@/components/essentails/icons'
 import Link from 'next/link'
 import useData from '../essentails/customHooks/useData'
 import { Doughnut } from 'react-chartjs-2'
-import Modal from '../essentails/snippets/modal'
+import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
+import { Button } from '../ui/button'
+import IncidentTable from '../essentails/snippets/incidentTable'
+import Spinner from '../essentails/snippets/Spinner'
 
 export default function Dashboard() {
   const { incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
@@ -16,15 +18,32 @@ export default function Dashboard() {
       {
         label: '# of Incidents',
         data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length, infoIncidents?.length],
+     
         backgroundColor: [
-          '#fde047',
-          '#fdba74',
-          '#b91c1c',
-          '#e5e5e5',
+          '#1678CF',
+          '#09579E',
+          '#003870',
+          '#BAE1FF',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  const data2 = {
+    labels: [`Low ${lowIncidents?.length}`, `Medium ${mediumIncidents?.length}`, `High ${highIncidents?.length}`, `Informational ${infoIncidents?.length}`],
+    datasets: [
+      {
+        label: '# of Incidents',
+        data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length, infoIncidents?.length],
+     
+        backgroundColor: [
+          '#DFA693',
+          '#E14B32',
+          '#C33726',
+          '#E2E2E2',
 
 
         ],
-
         borderWidth: 1,
       },
     ],
@@ -36,10 +55,11 @@ export default function Dashboard() {
         label: '# of Incidents',
         data: [lowFilterIncidents?.length, mediumFilterIncidents?.length, highFilterIncidents?.length, infoFilterIncidents?.length],
         backgroundColor: [
-          '#fde047',
-          '#fdba74',
-          '#b91c1c',
-          '#e5e5e5',
+          '#DFA693',
+          '#E14B32',
+          '#C33726',
+          '#E2E2E2',
+
 
         ],
 
@@ -49,190 +69,182 @@ export default function Dashboard() {
   };
   return (
     <>
-      <div>
-        <div className='flex gap-4 mb-2 '>
-          <div className='p-4 bg-white grow'>
-            {/* //incidents  */}
-            <div className="flex gap-1">
-              <Icons type="warning" />
 
-              <div>
+      <main className="   p-4  md:p-6 space-y-4">
+        <div className="flex items-center ">
+          <h1 className="font-semibold text-lg md:text-2xl">Dashboard</h1>
+          <Button className="ml-auto" size="sm">
+            Incidents
+          </Button>
+        </div>
+        <div className='grid grid-cols-[1.5fr_1fr] gap-4 items-start'>
 
-                <span className="">Incidents {filterIncidents?.length}</span>
-                <div className='flex gap-1'>
+        <div className='w-full '>
 
-                  <span>Last 24 hours
-                  </span>
-                  <Icons type="tooltip" />
+          <Card>
+            <CardHeader>
+              <CardTitle><div className="flex gap-1">
+
+                <div>
+
+                  <span className="">Incidents {filterIncidents?.length}</span>
+                  <div className='flex gap-1'>
+
+                    <span>Last 24 hours
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </div>
-            {/* count  */}
-            {
-              incidents?.length > 0 ?
-                <>
-                  <div>
-                    <div>
-                    </div>
-                    <div className='flex gap-4'>
-
+              </div></CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className=''>
+                {
+                  incidents?.length > 0 ?
+                    <>
+                    <IncidentTable data={filterIncidents}/>
                       
-                      <div className='grid'>
-                        <span> High </span>
-                      <span title={highFilterIncidents?.length} style={{
-                        width: `${highFilterIncidents?.length + 5}px`
-                      }} className={` h-4 bg-[#b91c1c]`}></span>
-                      </div>
-                      <div className='grid'>
-                        <span> Medium </span>
-                      <span title={mediumFilterIncidents?.length} style={{
-                        width: `${mediumFilterIncidents?.length + 5}px`
-                      }} className={` h-4 bg-[#fdba74]`}></span>
-                      </div>
-                      <div className='grid'>
-                        <span> Low </span>
-                      <span title={lowFilterIncidents?.length} style={{
-                        width: `${lowFilterIncidents?.length + 5}px`
-                      }} className={` h-4 bg-[#fde047]`}></span>
-                      </div>
-                      <div className='grid'>
-                        <span> Informational </span>
-                      <span title={infoFilterIncidents?.length} style={{
-                        width: `${infoFilterIncidents?.length + 5}px`
-                      }} className={` h-4 bg-[#e5e5e5]`}></span>
-                      </div>
+                    </>
+                    :
+                    <div className='grid place-items-center'>
+                      <h3>No incidents found</h3>
+                      <span>See incidents page for further information</span>
+                      <Link href="/dashboard/incidents" className='p-1 bg-primary px-2 text-white mt-2 '>Incidents</Link>
                     </div>
-                  </div>
-                </>
-                :
-                <div className='grid place-items-center'>
-                  <Icons type="case" />
-                  <h3>No incidents found</h3>
-                  <span>See incidents page for further information</span>
-                  <Link href="/dashboard/incidents" className='p-1 bg-primary px-2 text-white mt-2 '>Incidents</Link>
-                </div>
-            }
+                }
 
-          </div>
-          {/* anaylatics */}
+              </div>
+              {/* anaylatics */}
 
-          {/* charts  */}
-          <div className='p-4 max-w-md w-full bg-white'>
-            <span className="">Today {filterIncidents?.length}</span>
-            <div className='flex gap-1'>
-              <span>Current status</span>
-              <Icons type="tooltip" />
-            </div>
-            {/* charts  */}
-            {
-              incidents?.length > 0 ?
-                <div className='p-4'>
+              {/* charts  */}
 
-                  <Doughnut data={todayData} />
-                </div>
-                :
-                <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-                  <Icons type="case" />
-                  <div>
 
-                    <h3>Improve your coverage</h3>
-
-                  </div>
-                </div>
-            }
-          </div>
+            </CardContent>
+          </Card>
 
         </div>
-        <div className='flex gap-4 mb-2 '>
-          <div className='p-4 bg-white grow'>
-            {/* //data graph  */}
-            
-            <div className="flex gap-1">
-              <Icons type="warning" />
+        <div className='grid grid-cols-2  gap-4  w-full '>
+          <Card>
+            <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className=' max-w-md w-full bg-white'>
 
-              <div>
+                {/* charts  */}
+                {
+                  incidents?.length > 0 ?
+                    <div >
 
-                <span className="">All Incidents</span>
-                <div className='flex gap-1'>
+                      <Doughnut data={todayData} />
+                    </div>
+                    :
+                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+                      <div>
 
-                 
-                  <Icons type="tooltip" />
-                </div>
+                        <h3>Improve your coverage</h3>
+
+                      </div>
+                    </div>
+                }
               </div>
-            </div>
-            {/* count  */}
-            {incidents?.length > 0 ?
-              <div className='flex gap-4'>
 
-                      
-              <div className='grid'>
-                <span> High </span>
-              <span title={highIncidents?.length} style={{
-                width: `${highIncidents?.length + 5}px`
-              }} className={` h-4 bg-[#b91c1c]`}></span>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle> Total Incidents {incidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='max-w-md w-full bg-white'>
+
+                {/* charts  */}
+                {
+                  incidents?.length > 0 ?
+                    <div >
+
+                      <Doughnut data={data} />
+                    </div>
+                    :
+                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+
+                      <div>
+
+                        <h3>Improve your coverage</h3>
+
+                      </div>
+                    </div>
+                }
               </div>
-              <div className='grid'>
-                <span> Medium </span>
-              <span title={mediumIncidents?.length} style={{
-                width: `${mediumIncidents?.length + 5}px`
-              }} className={` h-4 bg-[#fdba74]`}></span>
+
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle> Analytics {incidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='max-w-md w-full bg-white'>
+
+                {/* charts  */}
+                {
+                  incidents?.length > 0 ?
+                    <div >
+
+                      <Doughnut data={data2} />
+                    </div>
+                    :
+                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+
+                      <div>
+
+                        <h3>Improve your coverage</h3>
+
+                      </div>
+                    </div>
+                }
               </div>
-              <div className='grid'>
-                <span> Low </span>
-              <span title={lowIncidents?.length} style={{
-                width: `${lowIncidents?.length + 5}px`
-              }} className={` h-4 bg-[#fde047]`}></span>
+
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle> Total {incidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='max-w-md w-full bg-white'>
+
+                {/* charts  */}
+                {
+                  incidents?.length > 0 ?
+                    <div >
+
+                      <Doughnut data={data} />
+                    </div>
+                    :
+                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+
+                      <div>
+
+                        <h3>Improve your coverage</h3>
+
+                      </div>
+                    </div>
+                }
               </div>
-              <div className='grid'>
-                <span> Informational </span>
-              <span title={infoIncidents?.length} style={{
-                width: `${infoIncidents?.length + 5}px`
-              }} className={` h-4 bg-[#e5e5e5]`}></span>
-              </div>
-            </div>
-              : <div className='grid place-items-center'>
-                <Icons type="case" />
-                <h3>No incidents found
-                </h3>
-                <span>See incidents page for further information</span>
-              </div>}
 
-          </div>
-          {/* charts */}
+            </CardContent>
+          </Card>
+        </div>
 
-          <div className='p-4 max-w-md w-full bg-white'>
-            <span className="">Total {incidents?.length} </span>
-            <div className='flex gap-1'>
-              <span>Current status</span>
-              <Icons type="tooltip" />
-            </div>
-            {/* charts  */}
-            {
-              incidents?.length > 0 ?
-                <div className='p-4'>
-
-                  <Doughnut data={data} />
-                </div>
-                :
-                <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-                  <Icons type="case" />
-                  <div>
-
-                    <h3>Improve your coverage</h3>
-
-                  </div>
-                </div>
-            }
-          </div>
-          <div>
-
-
-          </div>
         </div>
 
 
-      </div>
-
+      </main>
 
     </>
   )

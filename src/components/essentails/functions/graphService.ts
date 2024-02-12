@@ -10,7 +10,7 @@ const getClient = (accessToken: string) => {
 };
 
 export const getSignInLogs = async (accessToken: string) => {
-    debugger
+    
   const client = getClient(accessToken);
 
   try {

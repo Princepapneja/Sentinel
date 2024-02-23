@@ -14,11 +14,7 @@ const Sidebar = () => {
       link: "/dashboard/incidents",
       icon: <AlertTriangle />
     },
-    // {
-    //   name: "Sign-In Logs",
-    //   link: "/dashboard/sign-in-logs ",
-    //   icon: <AlertTriangle />
-    // },
+
     // {
     //   name: "Settings",
     //   link: "/dashboard/settings",
@@ -28,9 +24,11 @@ const Sidebar = () => {
 
   ]
   const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  
   return (
     <>
-      <aside className={`h-screen bg-secondary text-secondary-foreground  border-r-4 border-primary overflow-y-auto bg-  ${!open ? "w-12 " : "w-40"} duration-300`}>
+      <aside className={`h-screen bg-primary text-primary-foreground  border-primary overflow-y-auto  ${!open ? "w-[42px] " : "w-40"} duration-300`}>
         <nav className="  ">
           <button onClick={() => setOpen(!open)}
             className={`${open && " justify-end"} flex     w-full p-2  duration-300 focus:outline-none`}
@@ -45,9 +43,10 @@ const Sidebar = () => {
               <Link
                 key={index}
                 href={item.link}
-                className={`${!open && "p-2"} flex gap-1 border-t-2 border-primary text-base font-bold p-2 mb-2 focus:outline-none`}
+                onClick={()=>{setActive(index)}}
+                className={`${open && "flex gap-1"} ${active===index&& "bg-[#8e92a5]"}   text-base font-bold p-2 block  focus:outline-none`}
               >
-                {/* <Icons type={item.icon} /> */}
+              
                 {item.icon}
 
                 {open &&

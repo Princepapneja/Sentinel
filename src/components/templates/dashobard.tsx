@@ -4,8 +4,7 @@ import useData from '../essentails/customHooks/useData'
 import { Doughnut } from 'react-chartjs-2'
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Button } from '../ui/button'
-import IncidentTable from '../essentails/snippets/incidentTable'
-import Spinner from '../essentails/snippets/Spinner'
+import { FileWarning, HandPlatter, MegaphoneOff } from 'lucide-react'
 
 export default function Dashboard() {
   const { incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
@@ -18,7 +17,7 @@ export default function Dashboard() {
       {
         label: '# of Incidents',
         data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length, infoIncidents?.length],
-     
+
         backgroundColor: [
           '#1678CF',
           '#09579E',
@@ -35,7 +34,7 @@ export default function Dashboard() {
       {
         label: '# of Incidents',
         data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length, infoIncidents?.length],
-     
+
         backgroundColor: [
           '#DFA693',
           '#E14B32',
@@ -77,74 +76,28 @@ export default function Dashboard() {
             Incidents
           </Button>
         </div>
-        <div className='grid grid-cols-[1.5fr_1fr] gap-4 items-start'>
-
-        <div className='w-full '>
-
-          <Card>
-            <CardHeader>
-              <CardTitle><div className="flex gap-1">
-
-                <div>
-
-                  <span className="">Incidents {filterIncidents?.length}</span>
-                  <div className='flex gap-1'>
-
-                    <span>Last 24 hours
-                    </span>
-                  </div>
-                </div>
-              </div></CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className=''>
-                {
-                  incidents?.length > 0 ?
-                    <>
-                    <IncidentTable data={filterIncidents}/>
-                      
-                    </>
-                    :
-                    <div className='grid place-items-center'>
-                      <h3>No incidents found</h3>
-                      <span>See incidents page for further information</span>
-                      <Link href="/dashboard/incidents" className='p-1 bg-primary px-2 text-white mt-2 '>Incidents</Link>
-                    </div>
-                }
-
-              </div>
-              {/* anaylatics */}
-
-              {/* charts  */}
 
 
-            </CardContent>
-          </Card>
-
-        </div>
-        <div className='grid grid-cols-2  gap-4  w-full '>
+        <div className='grid grid-cols-4  gap-6   '>
           <Card>
             <CardHeader>
               <CardTitle> Today Incidents {filterIncidents?.length}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className=' max-w-md w-full bg-white'>
+            <CardContent className=''>
+              <div className=' max-w-md w-full bg-white h-full'>
 
                 {/* charts  */}
                 {
-                  incidents?.length > 0 ?
+                  filterIncidents?.length > 0 ?
                     <div >
 
                       <Doughnut data={todayData} />
                     </div>
                     :
-                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-                      <div>
-
-                        <h3>Improve your coverage</h3>
-
-                      </div>
+                    <div className='grid place-items-center' >
+                      < MegaphoneOff className='w-32 h-32' />
+                      <h3>No alerts today</h3>
                     </div>
                 }
               </div>
@@ -241,7 +194,6 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        </div>
 
 
       </main>

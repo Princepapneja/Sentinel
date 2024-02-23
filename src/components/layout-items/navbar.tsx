@@ -1,30 +1,28 @@
 'use client'
 import React, { useEffect } from 'react'
-import { getToken } from '../essentails/functions/getToken';
-import useData from '../essentails/customHooks/useData';
 import Link from 'next/link';
-import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button'
 import { AvatarIcon } from '@radix-ui/react-icons'
+import { initializeMSAL } from '../essentails/functions/initalizeMSAL';
 
 const Navbar = () => {
-  const session = useSession()
   const router = useRouter()
+  const handleLogout = async () => {
+    const pca = await initializeMSAL();
+    pca.clearCache();
+    router.push("/")
 
-  useEffect(() => {
-    session.status === "unauthenticated" && router.push("/")
-  }, [session])
+  }
 
   return (
     <>
       <nav className='nav flex gap-2 p-4 justify-between bg-primary items-center'>
-        <Link href="/" className='text-white font-bold'>MS-Sentinel </Link>
+        <Link href="/" className='text-white font-bold'>Security Operations </Link>
         <div className='flex gap-3' >
 
           {
-            session?.status === "authenticated" &&
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -47,7 +45,7 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem >
 
-                  <Button onClick={() => { signOut({ callbackUrl: "/" }); router.push("/") }} className='w-full' >Logout </Button>
+                  <Button onClick={handleLogout} className='w-full' >Logout </Button>
                   {/* // :
           // <Button asChild className='w-full'>
           //   <Link href="/">Login</Link>

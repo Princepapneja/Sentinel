@@ -2,16 +2,17 @@ import {
     PublicClientApplication,InteractionType
   } from "@azure/msal-browser";
 export const initializeMSAL = async () => {
-    const clientId = '3d3a42fb-58ae-4fd9-a69f-8f27294e940f';
-    const tenantId = '859e22dd-3386-4991-a003-379cc967d6e4';
-    
-    const msalConfig = {
+    const clientId = process.env.AZURE_AD_CLIENT_ID||"2ea6912c-63ad-43c9-825b-8cd0fbd4d369";
+    const tenantId = process.env.AZURE_AD_TENANT_ID|| "8e4ffc3c-99c8-4eab-bb00-a1c1dd3f33ba";
+   
+    const msalConfig:any = {
       auth: {
         clientId: clientId,
-        authority: `https://login.microsoftonline.com/${tenantId}`,
+        authority:`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`,
+        redirectUri: 'http://localhost:3000',
       },
       cache: {
-        cacheLocation: 'localStorage',
+        cacheLocation: 'localStorage', // Change cacheLocation to localStorage
         storeAuthStateInCookie: true,
       },
     };

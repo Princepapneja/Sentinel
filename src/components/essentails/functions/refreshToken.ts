@@ -1,7 +1,7 @@
 import { InteractionType } from "@azure/msal-browser";
 import { initializeMSAL } from "./initalizeMSAL";
 
-export const refreshToken = async (authResult:any) => {
+export const refreshToken = async () => {
     try {
       const pca = await initializeMSAL();
       const loginRequest = {
@@ -9,9 +9,11 @@ export const refreshToken = async (authResult:any) => {
 
 
       };
+      const accounts = pca.getAllAccounts();
+      
       const response = await pca.acquireTokenSilent({
         ...loginRequest,
-        account: authResult.account,
+        account: accounts[0],
         // interactionType: InteractionType.Popup,
       });
     

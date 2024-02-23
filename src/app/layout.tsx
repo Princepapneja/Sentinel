@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Sidebar from '@/components/layout-items/sidebar'
 import ContextLayout from '@/components/context/contextLayout'
 import Navbar from '@/components/layout-items/navbar'
-import ProviderLayout from '@/components/layout-items/sessionProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,7 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <ProviderLayout>
 
 
         <ContextLayout>
@@ -33,7 +30,6 @@ export default function RootLayout({
             </main>
   
         </ContextLayout>
-      </ProviderLayout>
 
       </body>
     </html>

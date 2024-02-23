@@ -2,7 +2,6 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import Context from './context';
 import { fetchData } from '../essentails/functions/fetchData';
-import { useSession } from "next-auth/react"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 interface ContextLayoutProps {
@@ -10,7 +9,6 @@ interface ContextLayoutProps {
 }
 
 const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
-    const { data: session }: any = useSession();
     ChartJS.register(ArcElement, Tooltip, Legend);
     const [incidents, setIncidents] = useState<any>([]);
     const [filterIncidents, setFilterIncidents] = useState<any>([]);
@@ -22,59 +20,58 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
     const [infoFilterIncidents, setInfoFilterIncidents] = useState<any>([]);
     const [infoIncidents, setInfoIncidents] = useState<any>([]);
     const [lowIncidents, setLowIncidents] = useState<any>([]);
-    const [token, setToken] = useState(session?.token)
+    const [token, setToken] = useState("")
     const [authResult, setAuthResult] = useState<any>(null);
     const [navHeight, setNavHeight] = useState<number>(0);
     const [loader, setLoader] = useState(true)
     const fetchIncidents = async () => {
 
-        if (session) {
 
             setLoader(true)
 
-            const graphApiUrl = 'https://graph.microsoft.com/v1.0/security/alerts';
+            const graphApiUrl = 'https://management.azure.com/subscriptions/434fddbe-606e-4cc9-b745-c63c6f20cb08/resourceGroups/Prince-workspace/providers/Microsoft.OperationalInsights/workspaces/Prince-workspace/providers/Microsoft.SecurityInsights/incidents?api-version=2023-11-01';
+            // const graphApiUrl = 'https://graph.microsoft.com/v1.0/security/alerts';
             // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/alerts?$filter=vendorInformation/provider eq 'Azure Sentinel'"
             // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/incidents"
 
-            let data = await fetchData(graphApiUrl, session.token)
+            let data = await fetchData(graphApiUrl,token)
             const filteredData = data?.filter((e: any) => {
                 let curDate: any = new Date()
-                const newDate: any = new Date(e.createdDateTime)
+            let newDate: any = new Date(e.properties.createdTimeUtc);
                 return (curDate - newDate < 24 * 60 * 60 * 1000);
             });
 
             setIncidents(data)
+            console.log(data,"ble");
             setFilterIncidents(filteredData)
-            console.log(filteredData);
 
             setHighFilterIncidents(filteredData?.filter((e: any) => {
-                return e.severity === "high"
+                return e.properties.severity === "High"
             }))
             setMediumFilterIncidents(filteredData?.filter((e: any) => {
-                return e.severity === "medium"
+                return e.properties.severity === "Medium"
             }))
             setLowFilterIncidents(filteredData?.filter((e: any) => {
-                return e.severity === "low"
+                return e.properties.severity === "Low"
             }))
             setInfoFilterIncidents(filteredData?.filter((e: any) => {
-                return e.severity === "informational"
+                return e.properties.severity === "Informational"
             }))
             setHighIncidents(data?.filter((e: any) => {
-                return e.severity === "high"
+                return e.properties.severity === "High"
             }))
             setMediumIncidents(data?.filter((e: any) => {
-                return e.severity === "medium"
+                return e.properties.severity === "Medium"
             }))
             setLowIncidents(data?.filter((e: any) => {
-                return e.severity === "low"
+                return e.properties.severity === "Low"
             }))
 
             setInfoIncidents(data?.filter((e: any) => {
-                return e.severity === "informational"
+                return e.properties.severity === "Informational"
             }))
             setLoader(false)
 
-        }
 
         // }
 
@@ -85,7 +82,10 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
         setNavHeight(nav?.scrollHeight)
     }
     useEffect(() => {
+        let tokenLocal = localStorage.getItem("token")
+        tokenLocal && setToken(tokenLocal)
         fetchHeight()
+        
         
     },[])
     return (

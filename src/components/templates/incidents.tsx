@@ -242,7 +242,6 @@
 
 import React, { useContext, useState, ChangeEvent, useEffect } from 'react';
 import Context from '../context/context';
-import moment from 'moment';
 import IncidentTable from '../essentails/snippets/incidentTable';
 import { Label } from '../ui/label';
 
@@ -260,9 +259,6 @@ interface Incident {
 
 const Incidents: React.FC = () => {
     const { incidents } = useContext(Context);
-
-
-
     return (
         // <>
         //     <div>

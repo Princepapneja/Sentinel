@@ -9,7 +9,6 @@ export const initializeMSAL = async () => {
       auth: {
         clientId: clientId,
         authority:`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`,
-        redirectUri: 'http://localhost:3000',
       },
       cache: {
         cacheLocation: 'localStorage', // Change cacheLocation to localStorage

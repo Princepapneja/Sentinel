@@ -110,7 +110,6 @@ function IncidentTable({ data, filters = false }: any) {
             setFilterData(data.filter((e: any) => (e.properties.severity.toLowerCase() === filterValue)).slice(firstIndex, lastIndex))
     })
     const getCellContent = (index: any, properties: any) => {
-        debugger
         switch (index) {
             case 0:
                 return (
@@ -156,19 +155,19 @@ function IncidentTable({ data, filters = false }: any) {
                         <span> Low </span>
                         <span title={lowFilterIncidents?.length} style={{
                             width: `${lowFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-[#DFA693]`}></span>
+                        }} className={` h-4 bg-low`}></span>
                     </div>
                     <div className='grid'>
                         <span> Medium </span>
                         <span title={mediumFilterIncidents?.length} style={{
                             width: `${mediumFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-[#E14B32]`}></span>
+                        }} className={` h-4 bg-medium`}></span>
                     </div>
                     <div className='grid'>
                         <span> High </span>
                         <span title={highFilterIncidents?.length} style={{
                             width: `${highFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-[#C33726]`}></span>
+                        }} className={` h-4 bg-high`}></span>
 
                     </div>
 
@@ -177,7 +176,7 @@ function IncidentTable({ data, filters = false }: any) {
                         <span> Informational </span>
                         <span title={incidents?.length} style={{
                             width: `${incidents?.length + 5}px`
-                        }} className={` h-4 bg-[#E2E2E2]`}></span>
+                        }} className={` h-4 bg-info`}></span>
                     </div>
                 </div>
                 <div>
@@ -207,7 +206,6 @@ function IncidentTable({ data, filters = false }: any) {
                                                 className="capitalize"
                                                 checked={column.checked}
                                                 onCheckedChange={(value) => {
-                                                    debugger;
                                                     setColumnFilters((prev) => {
                                                         const updatedFilters = prev.map((filter, index) => {
                                                             if (index === i) {

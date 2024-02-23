@@ -5,8 +5,14 @@ import { Doughnut } from 'react-chartjs-2'
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Button } from '../ui/button'
 import { FileWarning, HandPlatter, MegaphoneOff } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Badge } from '../ui/badge'
+import Pivots from '../essentails/snippets/pivots'
 
 export default function Dashboard() {
+  const [times, setTimes] = useState({
+    mttt: ""
+  })
   const { incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
 
   console.log(filterIncidents);
@@ -66,6 +72,26 @@ export default function Dashboard() {
       },
     ],
   };
+  useEffect(() => {
+    const timeToTriages = [...highIncidents, ...infoIncidents]?.map((incident: any) => {
+      return calculateTimeDifference(incident.properties.firstActivityTimeUtc, incident.properties.lastModifiedTimeUtc);
+    });
+    const totalTriageTime = timeToTriages?.reduce((total: any, time: any) => total + time, 0);
+    const meanTimeToTriage = totalTriageTime / incidents?.length;
+    const mttt = convertMillisecondsToHoursAndMinutes(meanTimeToTriage)
+    setTimes({ mttt: mttt })
+
+  }, [incidents])
+  function calculateTimeDifference(startTime: any, endTime: any) {
+    const start: any = new Date(startTime);
+    const end: any = new Date(endTime);
+    return end - start;
+  }
+  function convertMillisecondsToHoursAndMinutes(milliseconds: any) {
+    const hours = Math.floor(milliseconds / 3600000); // 1 hour = 3600000 milliseconds
+    const minutes = Math.floor((milliseconds % 3600000) / 60000); // 1 minute = 60000 milliseconds
+    return `${hours}.${minutes} hr`;
+  }
   return (
     <>
 
@@ -76,7 +102,8 @@ export default function Dashboard() {
             Incidents
           </Button>
         </div>
-
+        <Pivots />
+        {/* <h2>{times.mttt}</h2> */}
 
         <div className='grid grid-cols-4  gap-6   '>
           <Card>

@@ -75,12 +75,12 @@ const IncidentLineChart = () => {
     };
 
     return (
-        <div className='h-96 w-full'>
+        <>
             {
                 Object.keys(chartData)?.length > 0 &&
-                <Line data={chartData}   />
+                <Line data={chartData} className='grow'  />
             }
-        </div>
+        </>
     );
 };
 

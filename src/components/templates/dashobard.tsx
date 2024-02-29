@@ -110,39 +110,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className='flex '>
-          <div className='grow'>
+          <div className='grow '>
             
         <IncidentLineChart/>
-        
-        <Card>
-            <CardHeader>
-              <CardTitle> Total Incidents {incidents?.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='max-w-md w-full bg-white'>
-
-                {/* charts  */}
-                {
-                  incidents?.length > 0 ?
-                    <div >
-
-                      <Doughnut data={data} />
-                    </div>
-                    :
-                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-
-                      <div>
-
-                        <h3>Improve your coverage</h3>
-
-                      </div>
-                    </div>
-                }
-              </div>
-
-            </CardContent>
-          </Card>
           </div>
 
         <Card>
@@ -173,7 +143,35 @@ export default function Dashboard() {
         <div className='grid grid-cols-4  gap-6   '>
          
 
-         
+          <Card>
+            <CardHeader>
+              <CardTitle> Total Incidents {incidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='max-w-md w-full bg-white'>
+
+                {/* charts  */}
+                {
+                  incidents?.length > 0 ?
+                    <div >
+
+                      <Doughnut data={data} />
+                    </div>
+                    :
+                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
+
+                      <div>
+
+                        <h3>Improve your coverage</h3>
+
+                      </div>
+                    </div>
+                }
+              </div>
+
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle> Analytic Rules {Analytics?.length}

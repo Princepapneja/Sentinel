@@ -1,7 +1,8 @@
 'use client'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { AlertTriangle, Home,Menu,Wrench,X } from 'lucide-react';
+import { AlertTriangle, BarChart4, Home,Menu,Wrench,X } from 'lucide-react';
+import useData from '../essentails/customHooks/useData';
 const Sidebar = () => {
   let navData = [
     {
@@ -15,20 +16,20 @@ const Sidebar = () => {
       icon: <AlertTriangle />
     },
 
-    // {
-    //   name: "Settings",
-    //   link: "/dashboard/settings",
-    //   icon: <Wrench />
-    // },
+    {
+      name: "Analytics",
+      link: "/dashboard/analytics",
+      icon:<BarChart4 />
+    },
 
 
   ]
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [active, setActive] = useState(0)
-  
+  const {navHeight}= useData()
   return (
     <>
-      <aside className={`h-screen bg-primary text-primary-foreground  border-primary overflow-y-auto  ${!open ? "w-[42px] " : "w-40"} duration-300`}>
+      <aside className={` bg-primary text-primary-foreground  border-primary overflow-y-auto  ${!open ? "w-[42px] " : "w-40"} duration-300`} style={{height : `calc(100vh - ${navHeight}px)`}}>
         <nav className="  ">
           <button onClick={() => setOpen(!open)}
             className={`${open && " justify-end"} flex     w-full p-2  duration-300 focus:outline-none`}

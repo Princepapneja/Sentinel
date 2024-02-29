@@ -10,13 +10,18 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { fetchIncidents, token, navHeight, loader } = useData()
+  const { fetchIncidents, token, navHeight, loader, fetchAnalytics, setLoader } = useData()
   useEffect(() => {
-    if(token){
-
-      fetchIncidents()
+    if (token) {
+      allData()
     }
   }, [token])
+  const allData=async()=>{
+    setLoader(true)
+    await fetchIncidents()
+    await fetchAnalytics()
+    setLoader(false)
+  }
   return <>
     <main className="flex h-full w-full min-h-screen lg:min-h-0">
       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
@@ -26,11 +31,11 @@ export default function DashboardLayout({
         </div>
       </div>
       <main className="grow relative">
-        {loader ? 
-        <div className="absolute grid place-items-center top-0 right-0 w-full h-full ">
-          <Spinner />
-        </div>
-        :
+        {loader ?
+          <div className="absolute grid place-items-center top-0 right-0 w-full h-full ">
+            <Spinner />
+          </div>
+          :
           <ScrollArea className=" rounded-md border " style={{ height: `calc(100vh - ${navHeight}px)` }}>
             {children}
           </ScrollArea>

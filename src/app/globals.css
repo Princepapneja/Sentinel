@@ -193,3 +193,7 @@
     @apply bg-background text-foreground;
   }
 }
+canvas{
+  max-width: 1500px;
+  width: 100%;
+}

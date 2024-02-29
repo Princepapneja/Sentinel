@@ -148,39 +148,9 @@ function IncidentTable({ data, filters = false }: any) {
     };
     return (
         <>
-            <div>
-                <div className='flex gap-4 '>
-
-                    <div className='grid'>
-                        <span> Low </span>
-                        <span title={lowFilterIncidents?.length} style={{
-                            width: `${lowFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-low`}></span>
-                    </div>
-                    <div className='grid'>
-                        <span> Medium </span>
-                        <span title={mediumFilterIncidents?.length} style={{
-                            width: `${mediumFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-medium`}></span>
-                    </div>
-                    <div className='grid'>
-                        <span> High </span>
-                        <span title={highFilterIncidents?.length} style={{
-                            width: `${highFilterIncidents?.length + 5}px`
-                        }} className={` h-4 bg-high`}></span>
-
-                    </div>
-
-
-                    <div className='grid'>
-                        <span> Informational </span>
-                        <span title={incidents?.length} style={{
-                            width: `${incidents?.length + 5}px`
-                        }} className={` h-4 bg-info`}></span>
-                    </div>
-                </div>
-                <div>
-                </div>
+           
+              
+              
                 <div className="w-full">
                     <div className="flex items-center gap-4 py-4">
                         <Input
@@ -310,7 +280,7 @@ function IncidentTable({ data, filters = false }: any) {
                         </div>
                     </div>
                 </div>
-            </div>
+         
             <IncidentPanel selectedIncident={selectedIncident} />
         </>
 

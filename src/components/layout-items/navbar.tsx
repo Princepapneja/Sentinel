@@ -6,9 +6,14 @@ import { DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, Dropdown
 import { Button } from '../ui/button'
 import { AvatarIcon } from '@radix-ui/react-icons'
 import { initializeMSAL } from '../essentails/functions/initalizeMSAL';
+import useData from '../essentails/customHooks/useData';
+import { Label } from '../ui/label';
 
 const Navbar = () => {
   const router = useRouter()
+  const {currentUser}= useData()
+  
+
   const handleLogout = async () => {
     const pca = await initializeMSAL();
     pca.clearCache();
@@ -38,9 +43,24 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
-
-                  <Link href="/dashboard" >Dashboard </Link>
+                  <div className='grid place-items-center'>
+                    <Label>{currentUser?.name}</Label>
+                    <span className='text-xs'>{currentUser.username}</span>
+                  </div>
                 </DropdownMenuItem>
+                <DropdownMenuItem>
+
+                  <Link href="/dashboard" className='block'  >Dashboard </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+
+                  <Link href="/dashboard/incidents" className='block' >Incidents </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+
+                  <Link href="/dashboard/analytics" className='block' >Analytics </Link>
+                </DropdownMenuItem>
+
 
                 <DropdownMenuSeparator />
                 <DropdownMenuItem >

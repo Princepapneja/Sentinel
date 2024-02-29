@@ -15,7 +15,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-const SearchSelect = ({ data, handleSelect,key }: any) => {
+const SearchSelect = ({ data, handleSelect }: any) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
     return (

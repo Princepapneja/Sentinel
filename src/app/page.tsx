@@ -9,13 +9,16 @@ import { useEffect } from 'react';
 
 const LoginPage: React.FC = () => {
   const { push } = useRouter()
-  const { setToken } = useData()
+  const { setToken,currentUser,setCurrentUser } = useData()
   const handleLogin = async () => {
     try {
       const data = await getToken();
       setToken(data.accessToken);
+      console.log(data,"tokenData");
       localStorage.setItem("token", data.accessToken)
+      setCurrentUser(data.account)
       push("/dashboard")
+      
 
     } catch (error) {
       console.error('Error fetching access token:', error);

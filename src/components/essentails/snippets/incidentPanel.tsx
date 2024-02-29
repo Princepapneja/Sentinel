@@ -17,7 +17,6 @@ import { Badge } from '@/components/ui/badge'
 
 const IncidentPanel = ({ selectedIncident }: any) => {
     const { properties } = selectedIncident
-    console.log(properties);
     return (
         <>
 

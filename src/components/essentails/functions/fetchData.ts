@@ -16,6 +16,7 @@ export const fetchData = async (url: any,token:any) => {
         // let url = "https://graph.microsoft.com/v1.0/security/alerts_v2"
         // let url = "https://graph.microsoft.com/v1.0/security/incidents?$expand=alerts"
         let data = []
+
         while (hasNextPage) {
             const response: any = await axios(url, {
                 method: "GET",
@@ -27,7 +28,6 @@ export const fetchData = async (url: any,token:any) => {
 
             data.push(...response.data.value)
 
-
             if (response?.data?.["@odata.nextLink"]) {
                 url = response?.data?.["@odata.nextLink"];
             } else {
@@ -37,7 +37,7 @@ export const fetchData = async (url: any,token:any) => {
         }
 
     } catch (error: any) {
-    //    / if 
         console.error("Error fetching alerts:", error.message);
+return error.response.status
     }
 }

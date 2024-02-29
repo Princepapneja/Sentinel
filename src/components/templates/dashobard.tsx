@@ -1,19 +1,17 @@
 'use client'
-import Link from 'next/link'
 import useData from '../essentails/customHooks/useData'
 import { Doughnut } from 'react-chartjs-2'
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Button } from '../ui/button'
-import { FileWarning, HandPlatter, MegaphoneOff } from 'lucide-react'
+import { MegaphoneOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Badge } from '../ui/badge'
-import Pivots from '../essentails/snippets/pivots'
+import IncidentLineChart from '../essentails/snippets/incidentLineChart'
 
 export default function Dashboard() {
   const [times, setTimes] = useState({
     mttt: ""
   })
-  const { incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
+  const { Analytics, incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
 
   console.log(filterIncidents);
 
@@ -34,19 +32,16 @@ export default function Dashboard() {
       },
     ],
   };
-  const data2 = {
-    labels: [`Low ${lowIncidents?.length}`, `Medium ${mediumIncidents?.length}`, `High ${highIncidents?.length}`, `Informational ${infoIncidents?.length}`],
+  const analyticData = {
+    labels: [`Enable`, `Disable`],
     datasets: [
       {
-        label: '# of Incidents',
-        data: [lowIncidents?.length, mediumIncidents?.length, highIncidents?.length, infoIncidents?.length],
+        label: '# of Analytics',
+        data: [Analytics?.filter((rule: any) => (rule.properties.enabled))?.length, Analytics.filter((rule: any) => (!rule.properties.enabled))?.length],
 
         backgroundColor: [
-          '#DFA693',
-          '#E14B32',
-          '#C33726',
-          '#E2E2E2',
-
+          '#333632',
+          '#d1d1d1',
 
         ],
         borderWidth: 1,
@@ -60,10 +55,10 @@ export default function Dashboard() {
         label: '# of Incidents',
         data: [lowFilterIncidents?.length, mediumFilterIncidents?.length, highFilterIncidents?.length, infoFilterIncidents?.length],
         backgroundColor: [
-          '#DFA693',
-          '#E14B32',
-          '#C33726',
-          '#E2E2E2',
+          '#1678CF',
+          '#09579E',
+          '#003870',
+          '#BAE1FF',
 
 
         ],
@@ -73,8 +68,9 @@ export default function Dashboard() {
     ],
   };
   useEffect(() => {
-    const timeToTriages = [...highIncidents, ...infoIncidents]?.map((incident: any) => {
-      return calculateTimeDifference(incident.properties.firstActivityTimeUtc, incident.properties.lastModifiedTimeUtc);
+    console.log(filterIncidents);
+    const timeToTriages = incidents?.map((incident: any) => {
+      return calculateTimeDifference(incident.properties.createdTimeUtc, incident.properties.lastModifiedTimeUtc);
     });
     const totalTriageTime = timeToTriages?.reduce((total: any, time: any) => total + time, 0);
     const meanTimeToTriage = totalTriageTime / incidents?.length;
@@ -102,37 +98,23 @@ export default function Dashboard() {
             Incidents
           </Button>
         </div>
-        <Pivots />
-        {/* <h2>{times.mttt}</h2> */}
 
-        <div className='grid grid-cols-4  gap-6   '>
-          <Card>
-            <CardHeader>
-              <CardTitle> Today Incidents {filterIncidents?.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className=''>
-              <div className=' max-w-md w-full bg-white h-full'>
-
-                {/* charts  */}
-                {
-                  filterIncidents?.length > 0 ?
-                    <div >
-
-                      <Doughnut data={todayData} />
-                    </div>
-                    :
-                    <div className='grid place-items-center' >
-                      < MegaphoneOff className='w-32 h-32' />
-                      <h3>No alerts today</h3>
-                    </div>
-                }
-              </div>
-
-            </CardContent>
-          </Card>
-
-          <Card>
+        <div className='flex gap-4'>
+          <div className="border-l-4 border-primary  p-4 bg-muted rounded-lg shadow-md">
+            <div className="text-md font-semibold">Mean Time to Triage</div>
+            <div className="font-semibold text-2xl">{times.mttt}</div>
+          </div>
+          <div className="border-l-4 border-primary  p-4 bg-muted rounded-lg shadow-md">
+            <div className="text-md font-semibold">Mean Time to Triage</div>
+            <div className="font-semibold text-2xl">{times.mttt}</div>
+          </div>
+        </div>
+        <div className='flex '>
+          <div className='grow'>
+            
+        <IncidentLineChart/>
+        
+        <Card>
             <CardHeader>
               <CardTitle> Total Incidents {incidents?.length}
               </CardTitle>
@@ -161,9 +143,40 @@ export default function Dashboard() {
 
             </CardContent>
           </Card>
+          </div>
+
+        <Card>
+            <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=''>
+              <div className=' max-w-md w-full bg-white h-full'>
+
+
+                {
+                  filterIncidents?.length > 0 ?
+                    <div >
+                      <Doughnut data={todayData} />
+                    </div>
+                    :
+                    <div className='grid place-items-center' >
+                      < MegaphoneOff className='w-60 h-60' />
+                      <h3 className='font-bold'>No Incidents</h3>
+                    </div>
+                }
+              </div>
+
+            </CardContent>
+          </Card>
+        </div>
+        <div className='grid grid-cols-4  gap-6   '>
+         
+
+         
           <Card>
             <CardHeader>
-              <CardTitle> Analytics {incidents?.length}
+              <CardTitle> Analytic Rules {Analytics?.length}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -174,7 +187,7 @@ export default function Dashboard() {
                   incidents?.length > 0 ?
                     <div >
 
-                      <Doughnut data={data2} />
+                      <Doughnut data={analyticData} />
                     </div>
                     :
                     <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
@@ -190,35 +203,7 @@ export default function Dashboard() {
 
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle> Total {incidents?.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='max-w-md w-full bg-white'>
-
-                {/* charts  */}
-                {
-                  incidents?.length > 0 ?
-                    <div >
-
-                      <Doughnut data={data} />
-                    </div>
-                    :
-                    <div className='flex gap-3 p-4 rounded border-l-2 border-primary'>
-
-                      <div>
-
-                        <h3>Improve your coverage</h3>
-
-                      </div>
-                    </div>
-                }
-              </div>
-
-            </CardContent>
-          </Card>
+     
         </div>
 
 

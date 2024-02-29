@@ -1,11 +1,10 @@
-import { InteractionType } from "@azure/msal-browser";
 import { initializeMSAL } from "./initalizeMSAL";
 
 export const refreshToken = async () => {
     try {
       const pca = await initializeMSAL();
       const loginRequest = {
-        scopes: ['openid', 'profile', 'user.read', 'SecurityEvents.Read.All'],
+        scopes: ['https://management.azure.com/user_impersonation'],
 
 
       };

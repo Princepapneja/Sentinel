@@ -99,7 +99,7 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <div className='flex gap-4'>
+        <div className='flex gap-4 '>
           <div className="border-l-4 border-primary  p-4 bg-muted rounded-lg shadow-md">
             <div className="text-md font-semibold">Mean Time to Triage</div>
             <div className="font-semibold text-2xl">{times.mttt}</div>
@@ -109,7 +109,7 @@ export default function Dashboard() {
             <div className="font-semibold text-2xl">{times.mttt}</div>
           </div>
         </div>
-        <div className='flex '>
+        <div className='flex items-start'>
           <div className='grow '>
             
         <IncidentLineChart/>

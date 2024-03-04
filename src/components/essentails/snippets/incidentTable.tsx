@@ -21,7 +21,6 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import useData from "../customHooks/useData"
 import IncidentPanel from "./incidentPanel"
 
 
@@ -48,7 +47,6 @@ function IncidentTable({ data, filters = false }: any) {
     )
     const [pageNo, setPageNo] = useState(1)
 
-    const { incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents } = useData()
     const handleRow = async (row: any) => {
         setSelectedIncident(row)
         const panel: any = document.querySelector("#incidentPanel")
@@ -57,9 +55,9 @@ function IncidentTable({ data, filters = false }: any) {
     const [filterValue, setFilteredValue] = useState("")
     const severity = ["All", "Low", "Medium", "High", "Informational"]
     const status = ["All", "New", "Active"]
-    console.log(status);
     const handleSelect = (value: any) => {
         setPageNo(1)
+        
         setFilteredValue(value === "all" ? "" : value)
         firstIndex = 0
         lastIndex = 10
@@ -72,11 +70,11 @@ function IncidentTable({ data, filters = false }: any) {
         let dataFilter = data?.filter((item: any) => {
             return item.properties[`${key}`]?.toLowerCase() === value
         })
-        setFilterData(dataFilter)
+        setFilterData(dataFilter.slice(firstIndex, lastIndex))
         setTotalPage(Math.ceil(dataFilter?.length / 10))
 
     }
-    const handleChange = (ev: any, key: any) => {
+    const handleChange = (ev: any, keys: any) => {
         const { value } = ev.target
         setFilteredValue(value === "" ? "" : value)
 
@@ -84,17 +82,34 @@ function IncidentTable({ data, filters = false }: any) {
         lastIndex = 10
         setPageNo(1)
         if (value === "") {
-            setFilterData(data)
+            setFilterData(data.slice(firstIndex,lastIndex))
+            setTotalPage(Math.ceil(data?.length / 10))
             return
         }
         let dataFilter = data?.filter((item: any) => {
-            return item.properties[`${key}`]?.toLowerCase().includes(value.toLowerCase())
-        })
+            for (let key of keys ){
+                let propertyValue = item.properties[`${key}`];
+                if (Array.isArray(propertyValue)) {
+                    // If the property value is an array, check if any element matches the value
+                    for (let val of propertyValue) {
+                        if (val.toLowerCase().includes(value.toLowerCase())) {
+                            return true;
+                        }
+                    }
+                } else if (typeof propertyValue === 'string') {
+                    // If the property value is a string, check if it includes the value
+                    if (propertyValue.toLowerCase().includes(value.toLowerCase())) {
+                        return true;
+                    }
+    
+            }
+     } })
         setTotalPage(Math.ceil(dataFilter?.length / 10))
 
         setFilterData(dataFilter.slice(firstIndex, lastIndex))
     }
     const handlePagination = ((sign: any) => {
+        debugger
         if (sign === "+") {
             firstIndex += 10
             lastIndex += 10
@@ -154,9 +169,9 @@ function IncidentTable({ data, filters = false }: any) {
                 <div className="w-full">
                     <div className="flex items-center gap-4 py-4">
                         <Input
-                            placeholder="Filter title..."
+                            placeholder="Filter "
                             className="max-w-sm"
-                            onChange={(ev) => { handleChange(ev, "title") }}
+                            onChange={(ev) => { handleChange(ev, ["title","providerName","severity","status"]) }}
                         />
 
                         <SearchSelect data={severity} key="severity" handleSelect={handleSelect}></SearchSelect>

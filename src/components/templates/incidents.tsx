@@ -14,9 +14,13 @@ import { Badge } from '../ui/badge';
 
 
 const Incidents: React.FC = () => {
-    const { incidents,highIncidents, lowIncidents,mediumIncidents,infoIncidents } = useData();
+    const { incidents, highIncidents, lowIncidents, mediumIncidents, infoIncidents } = useData();
+
+    useEffect(()=>{
+
+    },[incidents])
     return (
-    
+
         <>
             <section className='p-4 md:p-6'>
                 <div className='flex justify-between'>
@@ -26,35 +30,60 @@ const Incidents: React.FC = () => {
                         <Label className="font-semibold text-lg md:text-2xl" >{incidents?.length} </Label>
                     </div>
                 </div>
-                <Pivots  />
+                <Pivots />
 
                 <div className='hidden md:block'>
-                <IncidentTable data={incidents} filters={true} />
+                    <IncidentTable data={incidents} filters={true} />
 
 
                 </div>
                 <ScrollArea className='md:hidden mt-4 h-[calc(100vh-200px)]'>
                     <div className=' space-y-2'>
 
-                    {
-                        incidents?.map((item: any, index: number) => {
-                            const { properties }: any = item
-                            return <div key={index} className='border border-primary p-2 rounded'>
+                        {
+                            incidents?.map((item: any, index: number) => {
+                                const { properties }: any = item
+                                return <div key={index} className='border border-primary p-2 rounded'>
 
-                                <CollapWrapper header={<div className='flex gap-1 items-center justify-between grow'>
-                                <Label className=''>{properties?.title}</Label>
-                                   
-                                    <Badge className='justify-center  max-w-16 w-full ' style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}
-                                    >{properties?.severity}</Badge>
-                                </div>}>
-                                  
-                                   
+                                    <CollapWrapper header={<div className='flex gap-1 items-center justify-between grow'>
+                                        <Label className=''>{properties?.title}</Label>
 
-                                </CollapWrapper>
-                            </div>
+                                        <Badge className='justify-center  max-w-16 w-full ' style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}
+                                        >{properties?.severity}</Badge>
+                                    </div>}>
 
-                        })
-                    }
+                                        <div>
+                                            <p className='mb-1'>{properties?.description}</p>
+                                            <div className='sm:flex  justify-between gap-2  space-y-2'>
+
+                                                <Badge className=' capitalize py-1.5  border-black' >
+                                                    <Label >{properties?.providerName || ""}</Label>
+                                                </Badge>
+
+                                                <div className='flex gap-2'>
+                                                    <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                                        <Label className='font-bold'>Alerts: </Label>
+                                                        <Label >{properties?.additionalData?.alertsCount
+                                                            || 0}</Label>
+                                                    </Badge>
+                                                    <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                                        <Label >{properties?.status || ""}</Label>
+                                                    </Badge>
+
+                                                    <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                                        <Label >{properties?.owner?.assignedTo || "Not assigned"}</Label>
+                                                    </Badge>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </CollapWrapper>
+                                </div>
+
+                            })
+                        }
                     </div>
 
                 </ScrollArea>

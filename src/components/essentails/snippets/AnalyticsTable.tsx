@@ -80,28 +80,50 @@ function AnalyticsTable() {
         let AnalyticsFilter = Analytics?.filter((item: any) => {
             return item.properties[`${key}`]?.toLowerCase() === value
         })
-        setFilterAnalytics(AnalyticsFilter)
-        setTotalPage(Math.ceil(AnalyticsFilter?.length / 10))
-
-    }
-    const handleChange = (ev: any, key: any) => {
-        const { value } = ev.target
-        setFilteredValue(value === "" ? "" : value)
-
-        firstIndex = 0
-        lastIndex = 10
-        setPageNo(1)
-        if (value === "") {
-            setFilterAnalytics(Analytics)
-            return
-        }
-        let AnalyticsFilter = Analytics?.filter((item: any) => {
-            return item.properties[`${key}`]?.toLowerCase().includes(value.toLowerCase())
-        })
-        setTotalPage(Math.ceil(AnalyticsFilter?.length / 10))
-
         setFilterAnalytics(AnalyticsFilter.slice(firstIndex, lastIndex))
+        setTotalPage(Math.ceil(AnalyticsFilter?.length / 10))
+
     }
+    const handleChange = (ev: any, keys: string[]) => {
+        const { value } = ev.target;
+        ;
+        setFilteredValue(value === "" ? "" : value);
+    
+        let firstIndex = 0;
+        let lastIndex = 10;
+        setPageNo(1);
+        
+        if (value === "") {
+            setFilterAnalytics(Analytics?.slice(firstIndex, lastIndex));
+            setTotalPage(Math.ceil(Analytics?.length / 10));
+            return;
+        }
+    
+        let filteredAnalytics = Analytics?.filter((item: any) => {
+            for (let key of keys) {
+                let propertyValue = item.properties[`${key}`];
+                if (Array.isArray(propertyValue)) {
+                    // If the property value is an array, check if any element matches the value
+                    for (let val of propertyValue) {
+                        if (val.toLowerCase().includes(value.toLowerCase())) {
+                            return true;
+                        }
+                    }
+                } else if (typeof propertyValue === 'string') {
+                    // If the property value is a string, check if it includes the value
+                    if (propertyValue.toLowerCase().includes(value.toLowerCase())) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+    
+        setTotalPage(Math.ceil(filteredAnalytics?.length / 10));
+        setFilterAnalytics(filteredAnalytics.slice(firstIndex, lastIndex));
+    }
+    
+    
     const handlePagination = ((sign: any) => {
         if (sign === "+") {
             firstIndex += 10
@@ -217,10 +239,11 @@ function AnalyticsTable() {
             <div className="w-full">
                 <div className="flex items-center gap-4 py-4">
                     <Input
-                        placeholder="Filter title..."
+                        placeholder="Filter title,severity, role type and techniques..."
                         className="max-w-sm"
-                        onChange={(ev) => { handleChange(ev, "title") }}
+                        onChange={(ev) => { handleChange(ev, ["tactics","techniques","displayName","severity"]) }}
                     />
+                    
 
                     <SearchSelect data={severity}  handleSelect={handleSelect}></SearchSelect>
                     <SearchSelect data={status}  handleSelect={handleSelect}></SearchSelect>

@@ -23,7 +23,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className='nav flex gap-2 p-4 justify-between bg-primary items-center'>
+      <nav className='nav flex gap-2 p-4 justify-between bg-primary items-center border-b-4'>
         <Link href="/" className='text-white font-bold'>Security Operations </Link>
         <div className='flex gap-3' >
 

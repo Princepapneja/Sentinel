@@ -16,12 +16,22 @@ export default function DashboardLayout({
       allData()
     }
   }, [token])
-  const allData=async()=>{
+  const allData = async () => {
     setLoader(true)
     await fetchIncidents()
     await fetchAnalytics()
     setLoader(false)
   }
+  // useEffect(() => {
+  //   const intervalId = setInterval(async () => {
+  //     if (token) {
+  //       await fetchIncidents()
+  //       await fetchAnalytics()
+  //     }
+  //   }, 60000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [token]);
   return <>
     <main className="flex h-full w-full min-h-screen lg:min-h-0">
       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">

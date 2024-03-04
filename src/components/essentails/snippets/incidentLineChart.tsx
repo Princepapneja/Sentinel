@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import useData from '../customHooks/useData';
 
 const IncidentLineChart = () => {
+
     const { filterIncidents } = useData()
     const [chartData, setChartData] = useState<any>({});
 
@@ -51,7 +52,6 @@ const IncidentLineChart = () => {
                 backgroundColor: getColorBySeverity(severityData.label),
             };
         });
-        debugger
         setChartData({
             labels: Object.keys(dataBySeverity[Object.keys(dataBySeverity)[0]].data).reverse(), // Reverse the order of labels
             datasets: datasets,
@@ -73,13 +73,15 @@ const IncidentLineChart = () => {
                 return '#000000';
         }
     };
+   
 
     return (
         <>
-            {
-                Object.keys(chartData)?.length > 0 &&
-                <Line data={chartData} className='grow'  />
-            }
+            {Object.keys(chartData)?.length > 0 && (
+                <Line data={chartData} options={{
+                    maintainAspectRatio:false
+                }} />
+            )}
         </>
     );
 };

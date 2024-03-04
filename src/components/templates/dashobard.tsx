@@ -6,17 +6,18 @@ import { Button } from '../ui/button'
 import { MegaphoneOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import IncidentLineChart from '../essentails/snippets/incidentLineChart'
+import IncidentBarChart from '../essentails/snippets/barData'
 
 export default function Dashboard() {
   const [times, setTimes] = useState({
-    mttt: ""
+    mttt: "",
+    mttc:""
   })
   const { Analytics, incidents, lowFilterIncidents, mediumFilterIncidents, highFilterIncidents, infoIncidents, infoFilterIncidents, filterIncidents, lowIncidents, highIncidents, mediumIncidents } = useData()
 
-  console.log(filterIncidents);
-
+ 
   const data = {
-    labels: [`Low ${lowIncidents?.length}`, `Medium ${mediumIncidents?.length}`, `High ${highIncidents?.length}`, `Informational ${infoIncidents?.length}`],
+    labels: [`Low`, `Medium`, `High`, `Informational`],
     datasets: [
       {
         label: '# of Incidents',
@@ -49,16 +50,16 @@ export default function Dashboard() {
     ],
   };
   let todayData = {
-    labels: [`Low ${lowFilterIncidents?.length}`, `Medium ${mediumFilterIncidents?.length}`, `High ${highFilterIncidents?.length}`, `Informational ${infoFilterIncidents}`],
+    labels: [`Low`, `Medium`, `High`, `Informational`],
     datasets: [
       {
         label: '# of Incidents',
         data: [lowFilterIncidents?.length, mediumFilterIncidents?.length, highFilterIncidents?.length, infoFilterIncidents?.length],
         backgroundColor: [
-          '#1678CF',
-          '#09579E',
-          '#003870',
-          '#BAE1FF',
+          '#DFA693',
+          '#E14B32',
+          '#C33726',
+          '#a8adb2',
 
 
         ],
@@ -69,25 +70,50 @@ export default function Dashboard() {
   };
   useEffect(() => {
     console.log(filterIncidents);
-    const timeToTriages = incidents?.map((incident: any) => {
-      return calculateTimeDifference(incident.properties.createdTimeUtc, incident.properties.lastModifiedTimeUtc);
-    });
-    const totalTriageTime = timeToTriages?.reduce((total: any, time: any) => total + time, 0);
-    const meanTimeToTriage = totalTriageTime / incidents?.length;
-    const mttt = convertMillisecondsToHoursAndMinutes(meanTimeToTriage)
-    setTimes({ mttt: mttt })
-
+    if (incidents && incidents.length > 0) {
+    
+  
+      calculateTimes();
+    }
   }, [incidents])
+  const calculateTimes = () => {
+    let totalTriageTime = 0;
+    let totalClosureTime = 0;
+
+    incidents.forEach((incident: any) => {
+      const triageTime = calculateTimeDifference(incident.properties.createdTimeUtc, incident.properties.lastModifiedTimeUtc);
+      totalTriageTime += triageTime;
+
+      const closureTime = calculateTimeDifference(incident.properties.createdTimeUtc, incident.properties.closedTimeUtc);
+      totalClosureTime += closureTime;
+    });
+
+    const meanTimeToTriage = totalTriageTime / incidents.length;
+    const meanTimeToClosure = totalClosureTime / incidents.length;
+
+    const mttt = convertMillisecondsToHoursAndMinutes(meanTimeToTriage);
+    const mttc = convertMillisecondsToHoursAndMinutes(meanTimeToClosure);
+
+    setTimes({ mttt: mttt, mttc: mttc });
+  };
   function calculateTimeDifference(startTime: any, endTime: any) {
     const start: any = new Date(startTime);
     const end: any = new Date(endTime);
     return end - start;
   }
+  
   function convertMillisecondsToHoursAndMinutes(milliseconds: any) {
     const hours = Math.floor(milliseconds / 3600000); // 1 hour = 3600000 milliseconds
     const minutes = Math.floor((milliseconds % 3600000) / 60000); // 1 minute = 60000 milliseconds
-    return `${hours}.${minutes} hr`;
+
+    console.log(hours ,minutes)
+    if (isNaN(hours) || isNaN(minutes)) {
+      return '0 hr';
+  } else {
+      return `${hours}.${minutes} hr`;
   }
+  }
+  
   return (
     <>
 
@@ -105,16 +131,22 @@ export default function Dashboard() {
             <div className="font-semibold text-2xl">{times.mttt}</div>
           </div>
           <div className="border-l-4 border-primary  p-4 bg-muted rounded-lg shadow-md">
-            <div className="text-md font-semibold">Mean Time to Triage</div>
-            <div className="font-semibold text-2xl">{times.mttt}</div>
+            <div className="text-md font-semibold">Mean Time to Closure</div>
+            <div className="font-semibold text-2xl">{times.mttc || "Nan"}</div>
           </div>
+          {/* <div className="border-l-4 border-primary  p-4 bg-muted rounded-lg shadow-md">
+            <div className="text-md font-semibold">Mean Time to Closure</div>
+            <div className="font-semibold text-2xl">{times.mttc || "Nan"}</div>
+          </div> */}
+          
         </div>
-        <div className='flex items-start'>
-          <div className='grow '>
-            
-        <IncidentLineChart/>
-          </div>
+        {/* <div className='flex gap-4'>
 
+            <div className='h-96 w-full flex gap-4'>
+              
+        <IncidentLineChart/>
+        
+        </div>
         <Card>
             <CardHeader>
               <CardTitle> Today Incidents {filterIncidents?.length}
@@ -139,10 +171,86 @@ export default function Dashboard() {
 
             </CardContent>
           </Card>
-        </div>
+            </div> */}
+        <div className='flex gap-4'>
+
+            <Card className='h-96 w-full bg-popover'>
+            {/* <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader> */}
+            <CardContent className='h-96'>
+        <IncidentBarChart/>
+        
+        </CardContent>
+          </Card>
+        <Card>
+            <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=''>
+              <div className=' max-w-md w-full bg-white h-full'>
+
+
+                {
+                  filterIncidents?.length > 0 ?
+                    <div >
+                      <Doughnut data={todayData} />
+                    </div>
+                    :
+                    <div className='grid place-items-center' >
+                      < MegaphoneOff className='w-60 h-60' />
+                      <h3 className='font-bold'>No Incidents</h3>
+                    </div>
+                }
+              </div>
+
+            </CardContent>
+          </Card>
+            </div>
+        <div className='flex gap-4'>
+
+            <Card className='h-96 w-full bg-popover'>
+            {/* <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader> */}
+            <CardContent className='h-96'>
+            <IncidentLineChart/>
+        
+        </CardContent>
+          </Card>
+        <Card>
+            <CardHeader>
+              <CardTitle> Today Incidents {filterIncidents?.length}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=''>
+              <div className=' max-w-md w-full bg-white h-full'>
+
+
+                {
+                  filterIncidents?.length > 0 ?
+                    <div >
+                      <Doughnut data={todayData} />
+                    </div>
+                    :
+                    <div className='grid place-items-center' >
+                      < MegaphoneOff className='w-60 h-60' />
+                      <h3 className='font-bold'>No Incidents</h3>
+                    </div>
+                }
+              </div>
+
+            </CardContent>
+          </Card>
+            </div>
+
+       
         <div className='grid grid-cols-4  gap-6   '>
          
-
+      
           <Card>
             <CardHeader>
               <CardTitle> Total Incidents {incidents?.length}
@@ -172,6 +280,7 @@ export default function Dashboard() {
 
             </CardContent>
           </Card>
+         
           <Card>
             <CardHeader>
               <CardTitle> Analytic Rules {Analytics?.length}

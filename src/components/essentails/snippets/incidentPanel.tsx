@@ -39,24 +39,41 @@ const IncidentPanel = ({ selectedIncident }: any) => {
                             <CardTitle >
                                 <div className='flex  justify-between gap-2 mb-1'>
 
-
-                                    <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
-                                        <Label className='font-bold'>Assigned to: </Label>
-                                        <Label >{properties?.owner?.assignedTo || "Not assigned"}</Label>
+                                    <Badge className=' capitalize py-1.5  border-black' >
+                                        <Label >{properties?.providerName || ""}</Label>
                                     </Badge>
+
+                                    <div className='flex gap-2'>
+                                        <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                            <Label className='font-bold'>Alerts: </Label>
+                                            <Label >{properties?.additionalData?.alertsCount
+                                                || 0}</Label>
+                                        </Badge>
+                                        <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                            <Label className='font-bold'>Status:  </Label>
+                                            <Label >{properties?.status || ""}</Label>
+                                        </Badge>
+
+                                        <Badge className=' capitalize flex gap-1 py-1.5  border-black' variant={"outline"}>
+                                            <Label className='font-bold'>Assigned to: </Label>
+                                            <Label >{properties?.owner?.assignedTo || "Not assigned"}</Label>
+                                        </Badge>
+
+                                    </div>
+
                                 </div>
                                 <div className="text-lg flex justify-between items-center">
 
                                     <h3>
                                         Title:  {properties?.title}
                                     </h3>
-                                    <Badge className=' capitalize text-white'  style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}>
+                                    <Badge className=' capitalize text-white' style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}>
 
 
-                                    <Label
-                                        
+                                        <Label
+
                                         >{properties?.severity}</Label>
-                                        </Badge>
+                                    </Badge>
                                 </div>
 
                             </CardTitle>

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Label } from '../ui/label';
 import useData from '../essentails/customHooks/useData';
 import AnalyticsPivots from '../essentails/snippets/AnalyticsPivots';
@@ -13,6 +13,9 @@ import { ScrollArea } from '../ui/scroll-area';
 
 const Analytics: React.FC = () => {
     const { Analytics } = useData();
+    useEffect(() => {
+        console.log(Analytics);
+    }, [Analytics])
     return (
 
         <>
@@ -32,25 +35,25 @@ const Analytics: React.FC = () => {
                 <ScrollArea className='md:hidden mt-4 h-[calc(100vh-200px)]'>
                     <div className=' space-y-2'>
 
-                    {
-                        Analytics?.map((item: any, index: number) => {
-                            const { properties }: any = item
-                            return <div key={index} className='border border-primary p-2 rounded'>
+                        {
+                            Analytics?.map((item: any, index: number) => {
+                                const { properties }: any = item
+                                return <div key={index} className='border border-primary p-2 rounded'>
 
-                                <CollapWrapper header={<div className='flex gap-1 items-center justify-between grow'>
-                                <Label className=''>{properties?.displayName}</Label>
-                                   
-                                    <Badge className='justify-center  max-w-16 w-full ' style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}
-                                    >{properties?.severity}</Badge>
-                                </div>}>
-                                  
-                                   
+                                    <CollapWrapper header={<div className='flex gap-1 items-center justify-between grow'>
+                                        <Label className=''>{properties?.displayName}</Label>
 
-                                </CollapWrapper>
-                            </div>
+                                        <Badge className='justify-center  max-w-16 w-full ' style={{ background: `${properties?.severity === "Low" ? "#DFA693" : properties?.severity === "Medium" ? "#E14B32" : properties?.severity === "High" ? "#C33726" : "#c2c2c2"}` }}
+                                        >{properties?.severity}</Badge>
+                                    </div>}>
 
-                        })
-                    }
+
+
+                                    </CollapWrapper>
+                                </div>
+
+                            })
+                        }
                     </div>
 
                 </ScrollArea>

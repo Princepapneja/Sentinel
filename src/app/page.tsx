@@ -5,11 +5,10 @@ import { getToken } from '@/components/essentails/functions/getToken';
 // import { getToken } from '@/components/essentails/functions/getToken';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 const LoginPage: React.FC = () => {
   const { push } = useRouter()
-  const { setToken,currentUser,setCurrentUser } = useData()
+  const { setToken,setCurrentUser } = useData()
   const handleLogin = async () => {
     try {
       const data = await getToken();

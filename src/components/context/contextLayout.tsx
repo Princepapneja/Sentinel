@@ -10,8 +10,10 @@ import {
     Title,
     Tooltip,
     Legend,
+    BarElement,
 } from 'chart.js';
 import { refreshToken } from '../essentails/functions/refreshToken';
+import { useRouter } from 'next/navigation';
 
 interface ContextLayoutProps {
     children: ReactNode;
@@ -22,7 +24,10 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
         LinearScale,
         PointElement,
         LineElement,
+        CategoryScale,
+        BarElement,
         Title);
+    const { push } = useRouter()
     const [Analytics, setAnalytics] = useState([])
     const [currentUser, setCurrentUser] = useState({})
     const [incidents, setIncidents] = useState<any>([]);
@@ -44,27 +49,31 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
 
 
 
-        const graphApiUrl = 'https://management.azure.com/subscriptions/434fddbe-606e-4cc9-b745-c63c6f20cb08/resourceGroups/Prince-workspace/providers/Microsoft.OperationalInsights/workspaces/Prince-workspace/providers/Microsoft.SecurityInsights/incidents?api-version=2023-11-01';
         // const graphApiUrl = 'https://graph.microsoft.com/v1.0/security/alerts';
         // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/alerts?$filter=vendorInformation/provider eq 'Azure Sentinel'"
         // const graphApiUrl = "https://graph.microsoft.com/v1.0/security/incidents"
+const heads={
+    id:process.env.ID|| "434fddbe-606e-4cc9-b745-c63c6f20cb08",
+    workspace:process.env.WORKSPACE || "Prince-workspace",
+    group:process.env.RESOURCE|| "Prince-workspace"
+}
 
-        let data = await fetchData(graphApiUrl, token)
+        let data:any = await fetchData("api/v1/incidents", token,heads)
+        console.log(data);
         if (data === 401) {
             const newToken: any = await refreshToken()
             localStorage.setItem("token", newToken)
             setToken(newToken)
-            data = await fetchData(graphApiUrl, token)
+            data = await fetchData("api/v1/incidents", newToken,heads)
         }
         if (data?.length > 0) {
             const filteredData = data?.filter((e: any) => {
                 let curDate: any = new Date()
                 let newDate: any = new Date(e.properties.createdTimeUtc);
-                return (curDate - newDate <30* 24 * 60 * 60 * 1000);
+                return (curDate - newDate < 30* 24 * 60 * 60 * 1000);
             });
 
             setIncidents(data)
-            console.log(data, "ble");
             setFilterIncidents(filteredData)
 
             setHighFilterIncidents(filteredData?.filter((e: any) => {
@@ -100,13 +109,18 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
         // }
     }
     const fetchAnalytics = async () => {
-        const url = 'https://management.azure.com/subscriptions/434fddbe-606e-4cc9-b745-c63c6f20cb08/resourceGroups/Prince-workspace/providers/Microsoft.OperationalInsights/workspaces/Prince-workspace/providers/Microsoft.SecurityInsights/alertRules?api-version=2023-11-01';
-        let data = await fetchData(url, token)
+        
+        const heads = {
+            id:process.env.ID|| "434fddbe-606e-4cc9-b745-c63c6f20cb08",
+            workspace:process.env.WORKSPACE || "Prince-workspace",
+            group:process.env.RESOURCE|| "Prince-workspace"
+        }
+        let data:any = await fetchData("api/v1/analytics", token,heads)
         if (data === 401) {
             const newToken: any = await refreshToken()
             localStorage.setItem("token", newToken)
             setToken(newToken)
-            data = await fetchData(url, token)
+            data = await fetchData("api/v1/analytics", newToken,heads)
         }
         console.log(data);
         setAnalytics(data)
@@ -114,12 +128,13 @@ const ContextLayout: React.FC<ContextLayoutProps> = ({ children }) => {
     }
     const fetchHeight = () => {
         const nav: any = document.querySelector(".nav")
-        setNavHeight(nav?.scrollHeight)
+        setNavHeight(nav?.offsetHeight)
     }
     useEffect(() => {
         let tokenLocal = localStorage.getItem("token")
         tokenLocal && setToken(tokenLocal)
-        fetchHeight()
+        // tokenLocal &&push("/dashboard")
+            fetchHeight()
 
 
     }, [])
